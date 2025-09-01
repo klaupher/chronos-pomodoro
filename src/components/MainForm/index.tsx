@@ -7,6 +7,8 @@ import type { TaskModel } from '../../models/TaskModel';
 import { useTaskContext } from '../../hooks/UseTaskContext';
 import { getNextCycle, getNextCycleType } from '../../utils/bussinessUtils';
 import { TaskActionTypes } from '../../contexts/TaskContext/taskActions';
+import Tips from '../Tips';
+import { showMessage } from '../../adapters/showMessage';
 
 export function MainForm() {
   const { state, dispatch } = useTaskContext();
@@ -21,7 +23,7 @@ export function MainForm() {
 
     const taskName = taskNameInput.current.value?.trim();
     if (taskName === '') {
-      alert('Digite o nome da tarefa');
+      showMessage.warn('Digite o nome da tarefa');
       return;
     }
     const newTask: TaskModel = {
@@ -34,9 +36,12 @@ export function MainForm() {
       type: nextCycleType,
     };
     dispatch({ type: TaskActionTypes.START_TASK, payload: newTask });
+    showMessage.info('Tarefa iniciada');
   };
 
   const handleInterruptTask = () => {
+    showMessage.dismiss();
+    showMessage.warn('Tarefa interrompida...');
     dispatch({
       type: TaskActionTypes.INTERRUPT_TASK,
     });
@@ -54,7 +59,7 @@ export function MainForm() {
         />
       </div>
       <div className='formRow'>
-        <p>Próximo intervalo é de 25 minutos.</p>
+        <Tips />
       </div>
 
       <div className='formRow'>
